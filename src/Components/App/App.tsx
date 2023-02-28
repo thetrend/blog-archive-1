@@ -4,9 +4,9 @@ import {
   Link,
 } from 'react-router-dom';
 
-import { Blog } from 'Components/Blog';
-import { AdminLayout } from 'Components/Admin';
-import { ForgotPW, Login, Signup } from 'Components/Auth';
+import { Blog } from '~/Components/Blog';
+import { AdminLayout } from '~/Components/Admin';
+import { ForgotPW, Login, Signup } from '~/Components/Auth';
 
 const App: React.FC = () => {
   return (
