@@ -8,4 +8,4 @@ No, for real. I know-- you're probably exhausted trying to keep up with the many
 * MongoDB
 
 ## Resources
-TBD
+* [Fetch data with React Hooks and Typescript](https://dev.to/camilomejia/fetch-data-with-react-hooks-and-typescript-390c)
