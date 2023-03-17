@@ -8,7 +8,12 @@ export interface RegistrantUser extends User {
   verifiedPassword: string;
 }
 
-export type AuthError = {
+export type AuthApiError = {
   name: 'email' | 'displayName' | 'password' | 'verifiedPassword' | 'login';
   message: string;
 }
+
+export type AuthApiAction = 
+  | string
+  | boolean
+  | { errors: AuthApiError[]; };

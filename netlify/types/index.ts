@@ -1,11 +1,13 @@
 import {
   User,
   RegistrantUser,
-  AuthError
+  AuthApiError,
+  AuthApiAction
 } from './auth';
 
 export {
   User,
   RegistrantUser,
-  AuthError
+  AuthApiError,
+  AuthApiAction
 };
