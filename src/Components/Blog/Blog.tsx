@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Blog: React.FC = () => {
   const [result, setResult] = useState<{ message: string; } | null>(null);
