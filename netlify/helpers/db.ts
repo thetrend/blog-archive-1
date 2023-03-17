@@ -15,4 +15,13 @@ const createClient = (): MongoClient => {
   return client;
 }
 
-export { DB, createClient };
+const findUser = async (email: string) => {
+  const db = createClient();
+  const connection = db.connect();
+  const database = (await connection).db(DB);
+  const collection = database.collection('users');
+  const findUser = collection.findOne({ email });
+  return findUser;
+}
+
+export { DB, createClient, findUser };
