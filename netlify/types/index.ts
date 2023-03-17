@@ -5,7 +5,7 @@ import {
   AuthApiAction
 } from './auth';
 
-export {
+export type {
   User,
   RegistrantUser,
   AuthApiError,
