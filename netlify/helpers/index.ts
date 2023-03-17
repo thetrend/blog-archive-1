@@ -1,10 +1,10 @@
-import { DB, createClient, findUser } from './db';
+import { DB, createClient, findOrCountUsers } from './db';
 import { domain, url } from './url';
 
 export {
   createClient,
   DB,
   domain,
-  findUser,
+  findOrCountUsers,
   url,
 };

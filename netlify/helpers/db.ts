@@ -15,13 +15,19 @@ const createClient = (): MongoClient => {
   return client;
 }
 
-const findUser = async (email: string) => {
+const findOrCountUsers = async (email: string | null = null) => {
   const db = createClient();
   const connection = db.connect();
   const database = (await connection).db(DB);
   const collection = database.collection('users');
-  const findUser = collection.findOne({ email });
-  return findUser;
+
+  if (!email) {
+    const userCount = await collection.countDocuments();
+    return userCount;
+  } else {
+    const findUser = await collection.findOne({ email });
+    return findUser ? true : false;
+  }
 }
 
-export { DB, createClient, findUser };
+export { DB, createClient, findOrCountUsers };
