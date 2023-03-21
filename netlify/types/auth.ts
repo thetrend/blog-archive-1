@@ -13,7 +13,15 @@ export type AuthApiError = {
   message: string;
 }
 
+export type AuthApiActionErrors = {
+  errors: AuthApiError[];
+};
+
 export type AuthApiAction = 
   | string
-  | boolean
-  | { errors: AuthApiError[]; };
+  | AuthApiActionErrors
+  | boolean;
+
+export interface AuthApiResponse {
+  message: AuthApiAction
+};

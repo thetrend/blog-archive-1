@@ -1,9 +1,9 @@
-import axios from 'axios';
 import validator from 'validator';
 import { HandlerEvent } from '@netlify/functions';
 import { AuthApiError, RegistrantUser } from '../../types';
 import { signupsAllowed } from './signupFlag';
-import { domain, findOrCountUsers } from '../../helpers';
+import AuthAPI from '../../helpers/axios/auth';
+import { findOrCountUsers } from '../../helpers';
 
 /**
  * signup
@@ -14,11 +14,11 @@ import { domain, findOrCountUsers } from '../../helpers';
 const signup = async (event: HandlerEvent) => {
   /**
    * Destructure Netlify environment variables
-   * and declare okToSignup using domain helper
+   * and define some variables
    */
   const { ALLOWED_EMAILS } = process.env;
   const allowedEmails = ALLOWED_EMAILS?.split(',');
-  const okToSignup = await axios.post(`${domain(event)}/api/auth/signup_check`, { flag: 'signup' });
+  const okToSignup = await AuthAPI.signupCheck({ flag: 'signup' });
   /**
    * 1. Deny access if not accessing endpoint by POST
    * 2. Check the boolean value of okToSignup
@@ -116,6 +116,10 @@ const signup = async (event: HandlerEvent) => {
       message: 'You already have an account.'
     });
   }
+  /**
+   * If any errors return "Signup is disabled",
+   * remove any other errors as this is priority.
+   */
   /**
    * If any errors are present, return the errors object
    */

@@ -16,10 +16,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "~/*": ["./*"],
-      "NETLIFY/*": ["../netlify/*"],
+      "~/*": ["./src/*"],
+      "~NETLIFY/*": ["./netlify/*"],
     }
   },
   "include": ["src", "types"],

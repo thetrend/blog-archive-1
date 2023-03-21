@@ -1,7 +1,6 @@
 import { Handler, HandlerEvent } from '@netlify/functions';
-import { DB, createClient, url } from '../../helpers';
+import { url } from '../../helpers';
 import { AuthApiAction } from '../../types';
-
 import signup from './signup';
 import proceed from './proceed';
 import signupFlag from './signupFlag';
@@ -44,7 +43,7 @@ const handler: Handler = async (event) => {
   } catch (error) {
     return {
       statusCode: errorCode,
-      body: JSON.stringify({ message: error.message })
+      body: JSON.stringify({ message: error })
     };
   }
 };

@@ -1,31 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import tw from 'twin.macro';
-import { RegistrantUser } from 'NETLIFY/types';
-import axios from 'axios';
-
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import AuthAPI from '~/../netlify/helpers/axios/auth'; // Weird that the below import works and this one doesn't
+import { AuthApiResponse, RegistrantUser } from 'NETLIFY/types';
 /**
  * TODO: 
  * 1. Make form input fields into reusable components
  */
-
 const Signup: React.FC = () => {
-  const [signupFlag, setSignupFlag] = useState<{ message: string }>();
+  const [signupFlag, setSignupFlag] = useState<AuthApiResponse>();
   const getFlag = async () => {
-    const { data } = await axios.post(`/api/auth/flag`, { checkFlag: 'signup' });
+    const data = await AuthAPI.signupCheck({ flag: 'signup' });
     setSignupFlag(data);
   };
   useEffect(() => {
     getFlag();
   }, []);
-  console.log(signupFlag);
+  const [formData, setFormData] = React.useState<RegistrantUser>({
+    email: '',
+    displayName: '',
+    password: '',
+    verifiedPassword: '',
+  });
+  const { email, displayName, password, verifiedPassword } = formData;
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  }
+  const handleSubmit = async (event: ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const response = await AuthAPI.signup(formData);
+    console.log(response);
+  }
+  const isSignupClosed = signupFlag && signupFlag.message === false;
   return (
     <>
       <h3>Signup</h3>
-      {signupFlag && signupFlag.message ? 'Signup is disabled.' : (<form tw="w-8/12 m-auto flex flex-col">
-        <><label htmlFor="email">Email:</label><input type="email" name="email" /></>
-        <><label htmlFor="displayName">Display Name:</label><input type="text" name="displayName" /></>
-        <><label htmlFor="password">Password:</label><input type="password" name="password" /></>
-        <><label htmlFor="verifiedPassword">Verify Password:</label><input type="password" name="verifiedPassword" /></>
+      {isSignupClosed ? 'Signup is disabled.' : 
+      (<form tw="w-8/12 m-auto flex flex-col" onSubmit={handleSubmit}>
+        <>
+          <label htmlFor="email">Email:</label>
+          <input value={email} type="email" name="email" onChange={handleChange} />
+        </>
+        <>
+          <label htmlFor="displayName">Display Name:</label>
+          <input value={displayName} type="text" name="displayName" onChange={handleChange} />
+        </>
+        <>
+          <label htmlFor="password">Password:</label>
+          <input value={password} type="password" name="password" onChange={handleChange} />
+        </>
+        <>
+          <label htmlFor="verifiedPassword">Verify Password:</label>
+          <input value={verifiedPassword} type="password" name="verifiedPassword" onChange={handleChange} />
+        </>
+        <>
+          <button type="submit" tw="block mx-auto bg-indigo-800 text-white p-3 hover:bg-indigo-700">Sign Up</button>
+        </>
       </form>)}
     </>
   );

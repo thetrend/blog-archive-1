@@ -1,5 +1,5 @@
 import { HandlerEvent } from '@netlify/functions';
-import { createClient, DB, findOrCountUsers } from '../../helpers';
+import { findOrCountUsers } from '../../helpers';
 
 const { ALLOW_SIGNUPS } = process.env;
 export const signupsAllowed = ALLOW_SIGNUPS === 'true';
