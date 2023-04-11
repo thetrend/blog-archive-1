@@ -1,8 +1,7 @@
-import { Handler, HandlerEvent } from '@netlify/functions';
+import { Handler } from '@netlify/functions';
 import { url } from '../../helpers';
-import { AuthApiAction } from '../../types';
+import { AuthApiResponse } from '../../types';
 import signup from './signup';
-import proceed from './proceed';
 import signupFlag from './signupFlag';
 
 const handler: Handler = async (event) => {
@@ -12,38 +11,27 @@ const handler: Handler = async (event) => {
   const errorCode = 500;
   const endpoint = url(event);
   try {
-    const login = async (event: HandlerEvent) => {
-      return 'this is the login';
-    };
-
-    let action: AuthApiAction | Error;
-
+    let action: AuthApiResponse;
     switch (endpoint) {
       case 'signup':
         action = await signup(event);
-        break;
-      case 'proceed':
-        action = await proceed(event);
-        break;
-      case 'login':
-        action = await login(event);
         break;
       case 'signup_check':
         action = await signupFlag(event);
         break;
       default:
-        action = 'Missing resource.';
+        action = new Error('Missing resource.');
         break;
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: action })
+      body: JSON.stringify(action)
     };
   } catch (error) {
     return {
       statusCode: errorCode,
-      body: JSON.stringify({ message: error })
+      body: JSON.stringify(error)
     };
   }
 };

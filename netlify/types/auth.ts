@@ -9,19 +9,6 @@ export interface RegistrantUser extends User {
 }
 
 export type AuthApiError = {
-  name: 'email' | 'displayName' | 'password' | 'verifiedPassword' | 'login';
+  name: 'email' | 'displayName' | 'password' | 'verifiedPassword' | 'login' | 'signup';
   message: string;
 }
-
-export type AuthApiActionErrors = {
-  errors: AuthApiError[];
-};
-
-export type AuthApiAction = 
-  | string
-  | AuthApiActionErrors
-  | boolean;
-
-export interface AuthApiResponse {
-  message: AuthApiAction
-};

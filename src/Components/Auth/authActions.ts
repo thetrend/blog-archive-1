@@ -1,6 +1,7 @@
 import { Dispatch } from 'react';
 import axios from 'axios';
 import { AuthAction, RegistrantUser } from './types';
+import AuthAPI from '~/../netlify/helpers/axios/auth';
 
 /**
  * signup
@@ -9,17 +10,19 @@ import { AuthAction, RegistrantUser } from './types';
  */
 export const signup = async (dispatch: Dispatch<AuthAction>, formData: RegistrantUser) => {
   try {
-    const response = await axios.post(`/auth/api/signup`, formData);
-    if (Array.isArray(response.data)) {
+    const response = await AuthAPI.signup(formData);
+    console.log(response)
+    if (Object.hasOwn(response, 'errors')) {
       dispatch({
         type: 'SIGNUP_ERROR',
-        payload: response.data
+        payload: response as any
       });
+    } else {
+      dispatch({
+        type: 'SIGNUP_SUCCESS',
+        payload: response as any
+      });  
     }
-    dispatch({
-      type: 'SIGNUP_SUCCESS',
-      payload: response.data
-    });
   } catch (error) {
     console.log(error);
   }

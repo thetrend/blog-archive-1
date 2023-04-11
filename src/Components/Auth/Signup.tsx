@@ -1,15 +1,18 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import AuthAPI from '~/../netlify/helpers/axios/auth'; // Weird that the below import works and this one doesn't
-import { AuthApiResponse, RegistrantUser } from 'NETLIFY/types';
+import { AuthApiAction, RegistrantUser } from 'NETLIFY/types';
+import { signup } from './authActions';
+import AuthContext from './AuthContext';
 /**
  * TODO: 
  * 1. Make form input fields into reusable components
  */
 const Signup: React.FC = () => {
-  const [signupFlag, setSignupFlag] = useState<AuthApiResponse>();
+  const { state, dispatch } = useContext(AuthContext);
+  const [signupFlag, setSignupFlag] = useState<AuthApiAction>();
   const getFlag = async () => {
     const data = await AuthAPI.signupCheck({ flag: 'signup' });
-    setSignupFlag(data);
+    setSignupFlag(data.signupsDisabled);
   };
   useEffect(() => {
     getFlag();
@@ -26,17 +29,15 @@ const Signup: React.FC = () => {
       ...formData,
       [event.target.name]: event.target.value,
     });
-  }
+  };
   const handleSubmit = async (event: ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const response = await AuthAPI.signup(formData);
-    console.log(response);
-  }
-  const isSignupClosed = signupFlag && signupFlag.message === false;
+    signup(dispatch, formData);
+  };
   return (
     <>
       <h3>Signup</h3>
-      {isSignupClosed ? 'Signup is disabled.' : 
+      {!signupFlag ? 'Signup is disabled.' : 
       (<form tw="w-8/12 m-auto flex flex-col" onSubmit={handleSubmit}>
         <>
           <label htmlFor="email">Email:</label>

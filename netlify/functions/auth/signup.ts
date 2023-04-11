@@ -20,6 +20,9 @@ const signup = async (event: HandlerEvent) => {
   const allowedEmails = ALLOWED_EMAILS?.split(',');
   const okToSignup = await AuthAPI.signupCheck({ flag: 'signup' });
   /**
+   * Create an empty array to contain error messages
+   */
+  let errorsArray: AuthApiError[] = [];  /**
    * 1. Deny access if not accessing endpoint by POST
    * 2. Check the boolean value of okToSignup
    * 3. Check if an event body is present (necessary to avoid errors on #4)
@@ -30,17 +33,16 @@ const signup = async (event: HandlerEvent) => {
     !event.body ||
     !Object.keys(JSON.parse(event.body)).includes('email')
   ) {
-    return 'Signup is disabled.';
+    errorsArray.push({
+      name: 'signup',
+      message: 'Signup is disabled.'
+    });
   }
   /**
    * Destructure variables for later use from event body now that we
    * know it has at least one key (email)
    */
   const { email, displayName, password, verifiedPassword }: RegistrantUser = JSON.parse(event.body);
-  /**
-   * Create an empty array to contain error messages
-   */
-  let errorsArray: AuthApiError[] = [];
   /**
    * If signups of more than 1 account are disabled AND a user exists
    * then present error
@@ -50,7 +52,7 @@ const signup = async (event: HandlerEvent) => {
     signupsAllowed === false && 
     !allowedEmails?.includes(email)) {
     errorsArray.push({
-      name: 'email',
+      name: 'signup',
       message: 'Signup is disabled.'
     });
     /**
@@ -124,8 +126,15 @@ const signup = async (event: HandlerEvent) => {
    * If any errors are present, return the errors object
    */
   if (errorsArray.length > 0) {
+    /**
+     * Filter for priority errors ("signup") then display
+     * the first result if both entries are identical
+     */
+    // https://plainenglish.io/blog/how-to-remove-duplicates-from-an-array-of-objects-in-javascript-71ce1bc96265
+    const priorityErrors = errorsArray.filter(error => error.name === 'signup').filter((error, index, arr) => 
+      index === arr.findIndex((item) => item.name === error.name && item.message === error.message));
     return {
-      errors: errorsArray
+      errors: priorityErrors ?? errorsArray
     };
   }
   /**
@@ -133,7 +142,7 @@ const signup = async (event: HandlerEvent) => {
    * Note: we are not inserting into the DB at this time
    * The next function ("proceed") will insert users
    */
-  return true;
+  return { success: true };
 };
 
 export default signup;

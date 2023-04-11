@@ -10,7 +10,7 @@ const signupFlag = async (event: HandlerEvent) => {
    * 2. Check if an event body is present
    */
   if (event.httpMethod !== 'POST' || !event.body) {
-    return 'Access denied.';
+    return { error: 'Access denied.' };
   }
   const { flag } = JSON.parse(event.body);
   let message: boolean | string;
@@ -29,12 +29,10 @@ const signupFlag = async (event: HandlerEvent) => {
       message = ((signupsAllowed === false && Number(await findOrCountUsers()) < 1) || signupsAllowed === true) ? 
         true :
         false;
-      break;
+      return { signupsDisabled: message };
     default:
-      message = 'Access denied.';
-      break;
+      return { error: 'Access denied.' }
   }
-  return message;
 };
 
 export default signupFlag;

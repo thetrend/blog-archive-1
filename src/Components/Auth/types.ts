@@ -8,20 +8,18 @@ import {
 export type AuthState = {
   errors?: AuthApiError[];
   loading?: boolean;
-  message?: string;
+  success?: boolean;
 };
 
 export type AuthAction = | {
   type: 'SIGNUP_SUCCESS',
   payload: {
-    message: boolean
+    success: boolean
   }
 } | {
   type: 'SIGNUP_ERROR' | 'LOGIN_ERROR',
   payload: {
-    message: {
-      errors: AuthApiError[]
-    }
+    errors: AuthApiError[]
   }
 };
 
