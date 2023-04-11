@@ -4,7 +4,36 @@ import * as path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext',
+    },
+  },
+  esbuild: {
+  },
+  plugins: [react({
+    babel: {
+      plugins: [
+        ['babel-plugin-twin', {
+          debug: true
+        }],
+        'babel-plugin-macros',
+        [
+          '@emotion/babel-plugin-jsx-pragmatic',
+          {
+            export: 'jsx',
+            import: '__cssprop',
+            module: '@emotion/react',
+          },
+        ],
+        [
+          '@babel/plugin-transform-react-jsx',
+          { pragma: '__cssprop' },
+          'twin.macro',
+        ],
+      ],
+    },
+  })],
   resolve: {
     alias: {
       '~': path.resolve(__dirname, 'src'),
